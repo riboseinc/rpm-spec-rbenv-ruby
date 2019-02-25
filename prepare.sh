@@ -2,8 +2,12 @@
 
 . /usr/local/rpm-specs/setup_env.sh
 
+readonly RUBY_VERSION=$(rpmspec -q --queryformat '%{VERSION}' ./*.spec)
+
 rpm --import https://github.com/riboseinc/yum/raw/master/ribose-packages.pub
 curl -L https://github.com/riboseinc/yum/raw/master/ribose.repo > /etc/yum.repos.d/ribose.repo
+
+ln -sf "$PWD" "/usr/local/rpm-specs/rbenv-ruby-$RUBY_VERSION"
 
 # For Ruby support of OpenSSL, readline and zlib extensions:
 yum install -y \
@@ -13,7 +17,7 @@ yum install -y \
 # Skip this error:
 # 0x0002
 export QA_RPATHS=$[ 0x0002 ]
-build_package rbenv-ruby-2.5.1
+build_package "rbenv-ruby-$RUBY_VERSION"
 
 # Enable the following lines to test compatibilty with passenger packages.
 #
